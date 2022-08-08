@@ -8,16 +8,16 @@ import { Component } from '@angular/core';
 export class AppComponent {
   newMemberName = '';
   members: string[] = [];
-  errorMessage: string = "";
-  numberOfTeam: number | "" = "";
-  teams:string[][] = [];
+  errorMessage: string = '';
+  numberOfTeam: number | '' = '';
+  teams: string[][] = [];
 
   onInput(member: string) {
     this.newMemberName = member;
   }
 
   onInputNumberTeam(value: string) {
-    this.numberOfTeam = Number(value)
+    this.numberOfTeam = Number(value);
   }
 
   addMember() {
@@ -25,31 +25,42 @@ export class AppComponent {
       this.errorMessage = "Name can't be empty";
       return;
     }
-    
-    this.errorMessage = "";
+
+    this.errorMessage = '';
     this.members.push(this.newMemberName);
-    this.newMemberName = "";
+    this.newMemberName = '';
   }
 
   generateTeams() {
-    if (!this.numberOfTeam || this.numberOfTeam <= 0 ) {
-      this.errorMessage = "The number of team can't be less or iqual to zero (0)"
+    if (!this.numberOfTeam || this.numberOfTeam <= 0) {
+      this.errorMessage =
+        "The number of team can't be less or iqual to zero (0)";
       return;
     }
 
-    const allMembers = [...this.members]
+    if (this.members.length < this.numberOfTeam) {
+      this.errorMessage = 'Not enough memebers';
+      return;
+    }
 
-    this.errorMessage = "";
-    for(let i = 0; i < this.numberOfTeam; i++) {
-      const randomIndex = Math.floor(Math.random() * allMembers.length);
-      const member = allMembers.splice(randomIndex, 1)[0]
+    this.errorMessage = '';
+    const allMembers = [...this.members];
 
-      if(this.teams[i]) {
-        this.teams[i].push(member);
-      }else{
-        this.teams[i] = [member];
+    while (allMembers.length) {
+      for (let i = 0; i < this.numberOfTeam; i++) {
+        const randomIndex = Math.floor(Math.random() * allMembers.length);
+        const member = allMembers.splice(randomIndex, 1)[0];
+
+        if (!member) break;
+
+        if (this.teams[i]) {
+          this.teams[i].push(member);
+        } else {
+          this.teams[i] = [member];
+        }
       }
     }
-    console.log(this.teams);
+    this.members = [];
+    this.numberOfTeam = '';
   }
 }
